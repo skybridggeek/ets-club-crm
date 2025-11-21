@@ -1,22 +1,16 @@
 @import "tailwindcss";
 
+@theme {
+  /* This teaches Tailwind your custom colors */
+  --color-brand-dark: #020617;
+  --color-brand-primary: #0050C8;
+  --color-brand-accent: #00B5D1;
+}
+
+/* Basic Dark Mode setup */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #020617;
+  --foreground: #ffffff;
 }
 
 body {
