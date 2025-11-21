@@ -101,12 +101,13 @@ export default function ChatPage() {
   if (!user) return <div className="flex h-screen items-center justify-center bg-gray-900 text-white">Loading...</div>;
 
   return (
-    <div className="h-[80vh] md:h-[calc(100vh-100px)] flex bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow-2xl relative">
+    // Outer container: Removed fixed height so it uses the flow space provided by layout.tsx
+    <div className="flex bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow-2xl relative min-h-[70vh]">
       
-      {/* --- SIDEBAR --- */}
+      {/* SIDEBAR (Channel List) */}
       <div className={`absolute inset-y-0 left-0 transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 w-72 bg-gray-950 border-r border-gray-800 flex flex-col transition-transform duration-200 z-50 shadow-2xl md:shadow-none`}>
         <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-950">
-          <h2 className="text-gray-400 text-xs font-bold uppercase tracking-wider">Channels</h2>
+          <h2 className="text-gray-400 text-xs font-bold uppercase tracking-wider">Text Channels</h2>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-gray-400 p-2"><X size={24}/></button>
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
@@ -125,18 +126,15 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* OVERLAY */}
-      {isSidebarOpen && <div className="absolute inset-0 bg-black/80 z-40 md:hidden" onClick={() => setIsSidebarOpen(false)}></div>}
-
-      {/* --- MAIN CHAT AREA --- */}
+      {/* MAIN CHAT AREA */}
       <div className="flex-1 flex flex-col bg-gray-900 relative w-full">
         
-        {/* HEADER */}
+        {/* HEADER (Now less intrusive, better spacing) */}
         <div className="h-16 flex items-center px-4 bg-gray-800 border-b border-gray-700 shadow-md z-30 justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            {/* Bigger Menu Button for Mobile */}
-            <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 -ml-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white active:scale-95 transition">
-              <Menu size={28} />
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Toggle: Added padding to make it easy to hit */}
+            <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white active:scale-95 transition">
+              <Menu size={24} />
             </button>
             <div className="flex items-center gap-2 text-white font-bold text-lg">
               {activeChannel === "Global" ? <Globe size={20} className="text-brand-primary" /> : <Hash size={20} className="text-gray-400" />}
@@ -148,8 +146,8 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* MESSAGES */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 bg-gray-900/50">
+        {/* MESSAGES (Added px-3/4 for better padding) */}
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-4 bg-gray-900/50">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-gray-600 opacity-50">
                <Ghost size={48} strokeWidth={1} className="mb-2" />
@@ -158,26 +156,22 @@ export default function ChatPage() {
           ) : (
             messages.map((msg, index) => {
               const isMe = msg.sender_id === user.id;
-              const senderName = msg.users?.full_name || "Unknown";
+              const senderName = msg.users?.full_name || "Unknown User";
               const role = msg.users?.role || "Member";
               const showHeader = index === 0 || messages[index - 1].sender_id !== msg.sender_id;
 
               return (
-                <div key={index} className={`flex gap-2 sm:gap-3 ${isMe ? "flex-row-reverse" : "flex-row"} group`}>
-                  {/* Avatar */}
+                <div key={index} className={`flex gap-3 ${isMe ? "flex-row-reverse" : "flex-row"} group`}>
                   <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 flex items-center justify-center text-xs sm:text-sm font-bold text-white mt-1 ${showHeader ? (role === 'Member' ? 'bg-gray-700' : 'bg-brand-primary') : 'invisible'}`}>
                     {senderName[0]}
                   </div>
-                  
-                  {/* Bubble Container */}
-                  <div className={`flex flex-col max-w-[85%] sm:max-w-[75%] ${isMe ? "items-end" : "items-start"}`}>
+                  <div className={`flex flex-col max-w-[90%] sm:max-w-[75%] ${isMe ? "items-end" : "items-start"}`}>
                     {showHeader && (
                       <div className="flex items-center gap-2 mb-1 px-1">
                         <span className="text-xs font-bold text-gray-300">{senderName}</span>
                         <span className="text-[10px] text-gray-600">{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
                     )}
-                    {/* Message Bubble */}
                     <div className={`px-4 py-2 rounded-2xl text-sm leading-relaxed break-words ${isMe ? "bg-brand-primary text-white rounded-tr-none" : "bg-gray-800 text-gray-200 rounded-tl-none"}`}>
                       {msg.message_text}
                     </div>
@@ -189,19 +183,10 @@ export default function ChatPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* INPUT */}
+        {/* INPUT (Added pb-3 for better bottom spacing) */}
         <div className="p-3 bg-gray-800 border-t border-gray-700 shrink-0">
           <form onSubmit={handleSendMessage} className="bg-gray-900 rounded-xl flex items-center px-3 py-2 border border-gray-700 focus-within:border-brand-accent transition">
-            <div className="p-2 bg-gray-800 rounded-full mr-2 text-gray-500 hidden sm:block">
-              <MessageSquare size={16} />
-            </div>
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder={`Message #${activeChannel}...`}
-              className="flex-1 bg-transparent text-white placeholder-gray-500 outline-none py-2 text-sm sm:text-base"
-            />
+            <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder={`Message #${activeChannel}...`} className="flex-1 bg-transparent text-white placeholder-gray-500 outline-none py-1 text-sm sm:text-base" />
             <button type="submit" disabled={!newMessage.trim()} className="p-2 text-brand-accent hover:text-white transition disabled:opacity-50">
               <Send size={18} />
             </button>
