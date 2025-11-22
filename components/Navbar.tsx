@@ -24,18 +24,14 @@ export default function Navbar() {
     router.push("/");
   };
 
-  // Base Links
   const navLinks = [
     { name: "Home", href: "/dashboard", icon: Home },
     { name: "Chats", href: "/dashboard/chats", icon: MessageCircle },
     { name: "Feedback", href: "/dashboard/feedback", icon: MessageSquare },
   ];
 
-  // Admin Links
   if (user && (user.role === "Admin" || user.role === "Developer")) {
-    // Insert Directory after Home
     navLinks.splice(1, 0, { name: "Directory", href: "/dashboard/portal", icon: Users });
-    // Add Sponsors at end
     navLinks.push({ name: "Sponsors", href: "/dashboard/sponsors", icon: DollarSign });
   }
 
@@ -45,18 +41,18 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             
-            {/* 1. LOGO */}
-            <div className="flex items-center gap-2">
+            {/* 1. LOGO (NOW CLICKABLE) */}
+            <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition">
               <div className="w-8 h-8 relative">
                 <Image src="/logo.png" alt="Logo" fill className="object-contain" />
               </div>
               <span className="font-bold text-xl tracking-wider text-white hidden sm:block">
                 ETS <span className="text-brand-accent">CRM</span>
               </span>
-            </div>
+            </Link>
 
             {/* 2. DESKTOP MENU */}
-            <div className="hidden sm:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -105,7 +101,7 @@ export default function Navbar() {
             <Link href="/dashboard/profile" onClick={() => setIsOpen(false)} className="block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:bg-white/10 hover:text-white flex items-center gap-3">
                <User size={20} /> My Profile
             </Link>
-            <button onClick={() => setShowLogoutModal(true)} className="w-full text-left block px-3 py-3 rounded-md text-base font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-3">
+            <button onClick={() => { setIsOpen(false); setShowLogoutModal(true); }} className="w-full text-left block px-3 py-3 rounded-md text-base font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-3">
               <LogOut size={20} /> Logout
             </button>
           </div>
@@ -114,8 +110,8 @@ export default function Navbar() {
 
       {/* LOGOUT MODAL */}
       {showLogoutModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-4">
-          <div className="bg-gray-900 border border-gray-700 p-6 rounded-2xl w-full max-w-sm shadow-2xl text-center">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="bg-gray-900 border border-gray-700 p-6 rounded-2xl w-full max-w-sm shadow-2xl text-center animate-fade-in">
              <h2 className="text-xl font-bold text-white mb-4">Log Out?</h2>
              <div className="flex gap-3">
                <button onClick={() => setShowLogoutModal(false)} className="flex-1 py-3 rounded-xl bg-gray-800 text-white hover:bg-gray-700">Cancel</button>
