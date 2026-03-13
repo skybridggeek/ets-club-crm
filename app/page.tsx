@@ -61,7 +61,7 @@ export default function LoginPage() {
           <div className="w-32 h-32 relative mb-4">
              {/* Make sure logo.png is in the public folder */}
             <Image 
-              src="/logo.png" 
+              src="/logo-v2.png" 
               alt="ETS Club Logo" 
               fill 
               className="object-contain"
